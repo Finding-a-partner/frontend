@@ -32,7 +32,7 @@ const RegisterPage = () => {
 
       const data = await response.json();
       setToken(data.token);
-      localStorage.setItem("token", data.token); // сохраняем токен
+      localStorage.setItem("token", data.accessToken); // сохраняем токен
 
       // TODO: перенаправить пользователя или показать сообщение
     } catch (err: any) {

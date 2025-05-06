@@ -22,7 +22,7 @@ const LoginPage = () => {
 
       const data = await response.json();
       setToken(data.token); // сохраняем токен
-      localStorage.setItem("token", data.token); // можно сохранить в localStorage
+      localStorage.setItem("token", data.accessToken); // можно сохранить в localStorage
     } catch (err: any) {
       setError(err.message || "Ошибка входа");
     }
