@@ -2,27 +2,19 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { userApi } from '../api/userApi';
 import { useAuth } from "../context/AuthContext";
+import {User} from "../types"
 
-interface User {
-  id: number;
-  login: string;
-  email: string;
-  name: string;
-  surname: string;
-  description: string;
-}
 
 const ProfilePage = () => {
-  const [user, setUser_] = useState<User | null>(null);
+  const [user_, setUser_] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const navigate = useNavigate();
   const { id } = useParams();
   const { setUser, setToken } = useAuth();
 
-  const currentUserJson = localStorage.getItem("user");
-  const currentUser = currentUserJson ? JSON.parse(currentUserJson) : null;
-  const currentUserId = currentUser?.id;
+  const { user, token } = useAuth();
+  const currentUserId = user?.id;
 
   const isOwnProfile = currentUserId === Number(id);
 
@@ -40,7 +32,7 @@ const ProfilePage = () => {
           return;
         }
 
-        const userData = await userApi.getUserById(Number(id));
+        const userData = await userApi.getUserById(Number(id), token);
         setUser_(userData);
       } catch (err) {
         setError('Ошибка загрузки данных пользователя');
@@ -54,16 +46,20 @@ const ProfilePage = () => {
   }, [id, navigate]);
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
     setUser(null);
     setToken(null);
     navigate('/login');
   };
 
+  const getCurrentUserId = (): number => {
+    const userJson = localStorage.getItem("user");
+    const user_ = userJson ? JSON.parse(userJson) : null;
+    return user_.id
+  };
+
   if (loading) return <div>Загрузка...</div>;
   if (error) return <div>{error}</div>;
-  if (!user) return <div>Пользователь не найден</div>;
+  if (!user_) return <div>Пользователь не найден</div>;
 
   return (
     <div className="profile-container">
@@ -74,10 +70,10 @@ const ProfilePage = () => {
       )}
 
       <div className="profile-info">
-        <h2>{user.name} {user.surname}</h2>
-        <p>Логин: {user.login}</p>
-        <p>Email: {user.email}</p>
-        <p>Описание: {user.description}</p>
+        <h2>{user_.name} {user_.surname}</h2>
+        <p>Логин: {user_.login}</p>
+        <p>Email: {user_.email}</p>
+        <p>Описание: {user_.description}</p>
       </div>
 
       <div className="navigation-buttons" style={{ marginTop: '20px', display: 'flex', gap: '10px' }}>
@@ -90,8 +86,8 @@ const ProfilePage = () => {
           </>
         ) : (
           <>
-            <button onClick={() => navigate(`/friends/add/${user.id}`)}>Добавить в друзья</button>
-            <button onClick={() => navigate(`/chats/new/${user.id}`)}>Написать сообщение</button>
+            <button onClick={() => userApi.makeFriendRequest({userId: getCurrentUserId(), friendId: Number(id)}, token)}>Добавить в друзья</button>
+            <button onClick={() => navigate(`/chats/${user_.id}`)}>Написать сообщение</button>
           </>
         )}
       </div>

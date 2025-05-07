@@ -58,6 +58,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, [user]);
 
   useEffect(() => {
+    console.log("TOKEN CHANGED:", token); // добавь это для проверки
     if (token) {
       localStorage.setItem("token", token);
     } else {

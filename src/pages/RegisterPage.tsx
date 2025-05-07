@@ -39,8 +39,6 @@ const RegisterPage = () => {
       const data = await response.json();
 
       setToken(data.accessToken); // сохраняем токен
-      localStorage.setItem("user", JSON.stringify(data.user));
-      localStorage.setItem("token", data.accessToken); // можно сохранить в localStorage
       setUser(data.user)
 
       setSuccess(true);

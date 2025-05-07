@@ -8,9 +8,8 @@ const LoginPage = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
-  const [token, setToken] = useState<string | null>(null);
   const navigate = useNavigate();
-  const { setUser } = useAuth();
+  const { setToken, setUser } = useAuth();
 
   const handleLogin = async () => {
     try {
@@ -28,8 +27,6 @@ const LoginPage = () => {
       const data = await response.json();
       
       setToken(data.accessToken); // сохраняем токен
-      localStorage.setItem("user", JSON.stringify(data.user));
-      localStorage.setItem("token", data.accessToken); // можно сохранить в localStorage
       setUser(data.user)
 
       setSuccess(true);

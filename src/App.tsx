@@ -6,7 +6,7 @@ import FeedPage from "./pages/FeedPage";
 import UserSearchPage from "./pages/UserSearchPage";
 import FriendsPage from "./pages/FriendsPage";
 import EventsPage from './pages/EventsPage';
-import MyProfilePage from './pages/ProfilePage';
+// import MyProfilePage from './pages/ProfilePage';
 import ProfilePage from './pages/ProfilePage';
 import Navbar from "./components/Navbar";
 
@@ -26,7 +26,7 @@ function App() {
             element={token ? <FeedPage /> : <Navigate to="/login" />}
           />
           <Route path="/users" element={<UserSearchPage />} />
-          <Route path="/userpage" element={<MyProfilePage />} />
+          <Route path="/userpage" element={<ProfilePage />} />
           <Route path="/events" element={<EventsPage />} />
           <Route path="/friends" element={<FriendsPage />} />
           <Route path="/users/:id" element={<ProfilePage />} />

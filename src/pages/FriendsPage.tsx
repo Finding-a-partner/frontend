@@ -49,6 +49,7 @@ const FriendsPage = () => {
       if (!res.ok) throw new Error("Ошибка при загрузке друзей");
 
       const data = await res.json();
+      console.log("friends", data);
       setFriends(data);
     } catch (err: any) {
       setError(err.message || "Ошибка");

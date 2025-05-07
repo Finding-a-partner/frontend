@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { userApi } from "../api/userApi";
 import UserCard from "../components/UserCard";
+import { useAuth } from "../context/AuthContext";
 
 type User = {
   id: number;
@@ -16,6 +17,7 @@ const UserSearchPage = () => {
   const [query, setQuery] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const { user, token } = useAuth();
 
   const fetchUsers = async (searchQuery?: string) => {
     try {
@@ -23,8 +25,8 @@ const UserSearchPage = () => {
       setError("");
 
       const data = searchQuery?.trim()
-        ? await userApi.searchUsers(searchQuery)
-        : await userApi.getAllUsers();
+        ? await userApi.searchUsers(searchQuery, token)
+        : await userApi.getAllUsers(token);
 
       setUsers(data);
     } catch (err: any) {
