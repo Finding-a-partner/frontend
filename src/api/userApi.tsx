@@ -56,7 +56,26 @@ export const userApi = {
     return await makeRequest(`/search?query=${encodeURIComponent(query)}`);
   },
 
-  // makeFriendRequest: async (query: string): Promise<User[]> => {
-  //   return await makeRequest(`/friends/requests`);
-  // }
+  makeFriendRequest: async (request: {
+    userId: number;
+    friendId: number;
+    status?: string; // optional, defaults to 'PENDING' on backend
+  }): Promise<void> => {
+    const token = localStorage.getItem("token");
+    if (!token) throw new Error("Unauthorized");
+  
+    const res = await fetch(`http://localhost:8000/friends/requests`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(request),
+    });
+  
+    if (!res.ok) {
+      const errorText = await res.text();
+      throw new Error(`Ошибка при отправке заявки: ${errorText}`);
+    }
+  }
 };

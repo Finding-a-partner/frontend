@@ -28,12 +28,25 @@ export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(() => {
-    const stored = localStorage.getItem("user");
-    return stored ? JSON.parse(stored) : null;
+    try {
+      const stored = localStorage.getItem("user");
+      return stored ? JSON.parse(stored) : null;
+    } catch (err) {
+      console.warn("Ошибка при чтении user из localStorage", err);
+      localStorage.removeItem("user");
+      return null;
+    }
   });
+  
 
   const [token, setToken] = useState<string | null>(() => {
-    return localStorage.getItem("token");
+    try {
+      return localStorage.getItem("token");
+    } catch (err) {
+      console.warn("Ошибка при чтении token из localStorage", err);
+      localStorage.removeItem("token");
+      return null;
+    }
   });
 
   useEffect(() => {
