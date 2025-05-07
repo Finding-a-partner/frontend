@@ -11,19 +11,11 @@ interface User {
   description: string;
 }
 
-const ProfilePage = () => {
+const MyProfilePage = () => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const navigate = useNavigate();
-  const { id } = useParams();
-
-  const currentUserJson = localStorage.getItem("user");
-  const currentUser = currentUserJson ? JSON.parse(currentUserJson) : null;
-  const currentUserId = currentUser?.id;
-
-  const isOwnProfile = currentUserId === Number(id);
-
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -34,12 +26,17 @@ const ProfilePage = () => {
           return;
         }
 
-        if (!id) {
+        const userJson = localStorage.getItem("user");
+        const user = userJson ? JSON.parse(userJson) : null;
+
+        const userId =  user.id;
+
+        if (!userId) {
           setError('Не удалось определить пользователя');
           return;
         }
 
-        const userData = await userApi.getUserById(Number(id));
+        const userData = await userApi.getUserById(Number(userId));
         setUser(userData);
       } catch (err) {
         setError('Ошибка загрузки данных пользователя');
@@ -50,11 +47,11 @@ const ProfilePage = () => {
     };
 
     fetchUser();
-  }, [id, navigate]);
+  }, [navigate]);
 
   const handleLogout = () => {
     localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    localStorage.removeItem('userId');
     navigate('/login');
   };
 
@@ -64,36 +61,47 @@ const ProfilePage = () => {
 
   return (
     <div className="profile-container">
-      <h1>{isOwnProfile ? 'Личный профиль' : 'Профиль пользователя'}</h1>
-
-      {isOwnProfile && (
-        <button onClick={handleLogout}>Выйти</button>
-      )}
-
+      <h1>Личный профиль</h1>
+      <button onClick={handleLogout}>Выйти</button>
+      
       <div className="profile-info">
         <h2>{user.name} {user.surname}</h2>
         <p>Логин: {user.login}</p>
         <p>Email: {user.email}</p>
         <p>Описание: {user.description}</p>
       </div>
+   {/* Навигационные кнопки */}
+   <div className="navigation-buttons" style={{ marginTop: '20px', display: 'flex', gap: '10px' }}>
+   <button 
+     onClick={() => navigate('/friends')}
+     style={{ padding: '10px 20px', cursor: 'pointer' }}
+   >
+     Друзья
+   </button>
+   
+   <button 
+     onClick={() => navigate('/groups')}
+     style={{ padding: '10px 20px', cursor: 'pointer' }}
+   >
+     Группы
+   </button>
 
-      <div className="navigation-buttons" style={{ marginTop: '20px', display: 'flex', gap: '10px' }}>
-        {isOwnProfile ? (
-          <>
-            <button onClick={() => navigate('/friends')}>Друзья</button>
-            <button onClick={() => navigate('/groups')}>Группы</button>
-            <button onClick={() => navigate('/events')}>Мероприятия</button>
-            <button onClick={() => navigate('/chats')}>Чаты</button>
-          </>
-        ) : (
-          <>
-            <button onClick={() => navigate(`/friends/add/${user.id}`)}>Добавить в друзья</button>
-            <button onClick={() => navigate(`/chats/new/${user.id}`)}>Написать сообщение</button>
-          </>
-        )}
-      </div>
-    </div>
-  );
+   <button 
+     onClick={() => navigate('/events')}
+     style={{ padding: '10px 20px', cursor: 'pointer' }}
+   >
+     Мероприятия
+   </button>
+   
+   <button 
+     onClick={() => navigate('/chats')}
+     style={{ padding: '10px 20px', cursor: 'pointer' }}
+   >
+     Чаты
+   </button>
+ </div>
+</div>
+);
 };
 
-export default ProfilePage;
+export default MyProfilePage;
