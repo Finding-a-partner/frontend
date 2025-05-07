@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom"; // импортируем useNavigate
 
 type User = {
   id: number;
@@ -23,6 +24,7 @@ const FriendsPage = () => {
   const [activeTab, setActiveTab] = useState<FriendshipStatus>("PENDING");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   const userJson = localStorage.getItem("user");
   const user = userJson ? JSON.parse(userJson) : null;
@@ -31,8 +33,13 @@ const FriendsPage = () => {
     if (!user) return;
 
     try {
-      setLoading(true);
       const token = localStorage.getItem("token");
+      if (!token) {
+        navigate("/login");
+        return;
+      }
+
+      setLoading(true);
       const res = await fetch(`http://localhost:8000/users/friends/${user.id}?status=${status}`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -51,8 +58,13 @@ const FriendsPage = () => {
   };
 
   useEffect(() => {
-    fetchFriends(activeTab);
-  }, [activeTab]);
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/login");
+    } else {
+      fetchFriends(activeTab);
+    }
+  }, [activeTab, navigate]);
 
   return (
     <div>

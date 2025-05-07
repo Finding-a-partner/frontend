@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { userApi } from '../api/userApi';
+import { useAuth } from "../context/AuthContext";
 
 interface User {
   id: number;
@@ -12,18 +13,18 @@ interface User {
 }
 
 const ProfilePage = () => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser_] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const navigate = useNavigate();
   const { id } = useParams();
+  const { setUser, setToken } = useAuth();
 
   const currentUserJson = localStorage.getItem("user");
   const currentUser = currentUserJson ? JSON.parse(currentUserJson) : null;
   const currentUserId = currentUser?.id;
 
   const isOwnProfile = currentUserId === Number(id);
-
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -40,7 +41,7 @@ const ProfilePage = () => {
         }
 
         const userData = await userApi.getUserById(Number(id));
-        setUser(userData);
+        setUser_(userData);
       } catch (err) {
         setError('Ошибка загрузки данных пользователя');
         console.error(err);
@@ -55,6 +56,8 @@ const ProfilePage = () => {
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
+    setUser(null);
+    setToken(null);
     navigate('/login');
   };
 

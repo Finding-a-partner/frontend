@@ -54,5 +54,9 @@ export const userApi = {
   
   searchUsers: async (query: string): Promise<User[]> => {
     return await makeRequest(`/search?query=${encodeURIComponent(query)}`);
-  }
+  },
+
+  // makeFriendRequest: async (query: string): Promise<User[]> => {
+  //   return await makeRequest(`/friends/requests`);
+  // }
 };

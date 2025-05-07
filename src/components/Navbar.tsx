@@ -14,11 +14,16 @@ const Navbar = () => {
       <div>
         <Link to="/login">Вход</Link> | 
         <Link to="/register">Регистрация</Link> | 
-        <Link to="/feed">Новости</Link> | 
-        <Link to="/users">Пользователи</Link> | 
-        <Link to="/friends">Друзья</Link> |
-        {/* <Link to="/userpage">Профиль</Link> */}
-        <Link to={`/users/${user!.id}`}>Профиль</Link>
+        
+        {user && (
+          <>
+            {" | "}
+            <Link to="/feed">Новости</Link> | 
+            <Link to="/users">Пользователи</Link> | 
+            <Link to="/friends">Друзья</Link> |
+            <Link to={`/users/${user.id}`}>Профиль</Link>
+          </>
+        )}
       </div>
       {user && (
         <div>
