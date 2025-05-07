@@ -19,7 +19,7 @@ const Navbar = () => {
         <Link to="/friends">Друзья</Link> |
         {user && (
           <>
-            
+          console.log(userId);
             <Link to={`/users/${user.id}`}>Профиль</Link>
           </>
         )}

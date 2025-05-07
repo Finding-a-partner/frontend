@@ -6,12 +6,17 @@ import FeedPage from "./pages/FeedPage";
 import UserSearchPage from "./pages/UserSearchPage";
 import FriendsPage from "./pages/FriendsPage";
 import EventsPage from './pages/EventsPage';
-// import MyProfilePage from './pages/ProfilePage';
 import ProfilePage from './pages/ProfilePage';
 import Navbar from "./components/Navbar";
+import {useAuth} from "./context/AuthContext";
+import GroupListPage from "./pages/GroupListPage";
+import CreateGroupPage from "./pages/CreateGroupPage";
+import GroupDetailPage from "./pages/GroupDetailPage";
+import EditGroupPage from "./pages/EditGroupPage";
 
 function App() {
-  const token = localStorage.getItem("token");
+  // const token = localStorage.getItem("token");
+  const {token} = useAuth()
 
   return (
     <Router>
@@ -30,6 +35,10 @@ function App() {
           <Route path="/events" element={<EventsPage />} />
           <Route path="/friends" element={<FriendsPage />} />
           <Route path="/users/:id" element={<ProfilePage />} />
+          <Route path="/groups" element={<GroupListPage />} />
+          <Route path="/groups/create" element={<CreateGroupPage />} />
+          <Route path="/groups/:id" element={<GroupDetailPage />} />
+          <Route path="/groups/:id/edit" element={<EditGroupPage />} />
           {/* <Route path="/friends/add/:id" element={<AddFriendPage />} />
           <Route path="/chats/new/:id" element={<NewChatPage />} /> */}
         </Routes>

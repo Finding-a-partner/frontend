@@ -26,7 +26,8 @@ const LoginPage = () => {
 
       const data = await response.json();
       
-      setToken(data.accessToken); // сохраняем токен
+      setToken(data.accessToken);
+      console.log(data) // сохраняем токен
       setUser(data.user)
 
       setSuccess(true);

@@ -5,10 +5,18 @@ export interface Owner {
     name: string;
     surname: string;
   }
-export interface Group {
+  export enum Visibility{
+    EVERYONE = 'EVERYONE',
+    FRIENDS = 'FRIENDS',
+    GROUP = 'GROUP',
+  }
+  
+  export interface Group {
     id: number;
-    type: string;
+    createdAt: string;
     name: string;
+    description?: string;
+    creatorUserId: number;
   }
   export enum FriendshipStatus {
     PENDING,
@@ -39,3 +47,9 @@ export interface Friend {
     email: string;
     description?: string;
   };
+  export interface GroupMembership {
+    createdAt: string;
+    groupId: number;
+    userId: number;
+    role: 'OWNER' | 'ADMIN' | 'MEMBER';
+  }
