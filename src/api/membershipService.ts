@@ -47,7 +47,7 @@ export const addMembership = async (
 
     const user = JSON.parse(userJson);
     const userId = user.id;
-    const role = 'USER'
+    const role = 'MEMBER'
     const response = await fetch(`${BASE_URL}/groups/${groupId}/member`, {
         method: "POST",
         headers: {
