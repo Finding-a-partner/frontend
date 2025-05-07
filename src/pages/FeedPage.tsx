@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import FeedCard from "../components/FeedCard";
+import { joinEvent } from "../api/feedApi"
 
 interface FeedResponse {
   id: number;
@@ -16,7 +17,8 @@ interface FeedResponse {
 const FeedPage = () => {
   const [feed, setFeed] = useState<FeedResponse[]>([]);
   const [error, setError] = useState("");
-
+  const [loading, setLoading] = useState(false);
+  const [joiningEventId, setJoiningEventId] = useState<number | null>(null);
   useEffect(() => {
     const fetchFeed = async () => {
       try {
@@ -43,6 +45,22 @@ const FeedPage = () => {
     fetchFeed();
   }, []);
 
+  const handleJoinEvent = async (eventId: number) => {
+    setJoiningEventId(eventId);
+    setLoading(true);
+    try {
+      await joinEvent(eventId);
+      setFeed(feed.map(item => 
+        item.id === eventId ? { ...item, isParticipating: true } : item
+      ));
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+      setJoiningEventId(null);
+    }
+  };
+
   return (
     <div>
       <h2>Новостная лента</h2>
@@ -51,6 +69,7 @@ const FeedPage = () => {
         <p>Нет мероприятий</p>
       ) : (
         feed.map((item) => (
+          <div key={item.id} style={{ marginBottom: "20px", border: "1px solid #eee", padding: "15px", borderRadius: "8px" }}>
           <FeedCard
             key={item.id}
             id={item.id}
@@ -62,6 +81,22 @@ const FeedPage = () => {
             ownerId={item.ownerId}
             visibility={item.visibility}
           />
+           <button
+              onClick={() => handleJoinEvent(item.id)}
+              disabled={loading && joiningEventId === item.id}
+              style={{
+                marginTop: "10px",
+                padding: "8px 16px",
+                backgroundColor: "#4caf50",
+                color: "white",
+                border: "none",
+                borderRadius: "4px",
+                cursor: "pointer"
+              }}
+            >
+            Учавствовать
+            </button>
+            </div>
         ))
       )}
     </div>

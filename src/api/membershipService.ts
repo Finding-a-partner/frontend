@@ -1,3 +1,4 @@
+import { useAuth } from "../context/AuthContext";
 import { GroupMembership, Owner } from "../types";
 
 const BASE_URL = "http://localhost:8000";
@@ -37,9 +38,16 @@ export const getMembersByUserId = async (
 
 export const addMembership = async (
     groupId: number,
-    userId: number,
-    role: "OWNER" | "ADMIN" | "MEMBER"
 ): Promise<GroupMembership> => {
+    const userJson = localStorage.getItem("user");
+    const token = localStorage.getItem("token"); // Используем токен, а не id
+    if (!userJson || !token) {
+        throw new Error("Требуется авторизация");
+    }
+
+    const user = JSON.parse(userJson);
+    const userId = user.id;
+    const role = 'USER'
     const response = await fetch(`${BASE_URL}/groups/${groupId}/member`, {
         method: "POST",
         headers: {
