@@ -31,6 +31,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ title, onSubmit }) => {
     }
 
     onSubmit(email, password);
+    
   };
 
   return (

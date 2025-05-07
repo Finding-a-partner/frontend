@@ -18,6 +18,11 @@ const LoginPage = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ login, password }),
       });
+      console.log("Полный ответ сервера:", {
+        status: response.status,
+        headers: Object.fromEntries(response.headers.entries()),
+        body: await response.clone().text() // clone чтобы не "испортить" response
+      });
 
       if (!response.ok) {
         const text = await response.text();
@@ -31,6 +36,7 @@ const LoginPage = () => {
       setUser(data.user)
 
       setSuccess(true);
+      window.location.href = "/userpage";
       setTimeout(() => {
         navigate("/feed");
       }, 1500); // через 1.5 секунды переходим

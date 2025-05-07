@@ -24,7 +24,12 @@ export interface Owner {
     REJECTED,
     BLOCKED,
 }
-
+export interface GroupMembership {
+  createdAt: string;
+  groupId: number;
+  userId: number;
+  role: 'OWNER' | 'ADMIN' | 'MEMBER';
+}
 
 export interface Friend {
     id: number;

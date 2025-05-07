@@ -3,7 +3,7 @@ import { useAuth } from "../context/AuthContext";
 
 const Navbar = () => {
   const { user } = useAuth();
-
+  console.log('Текущий пользователь:', user); 
   return (
     <nav style={{
       display: "flex",
@@ -19,7 +19,6 @@ const Navbar = () => {
         <Link to="/friends">Друзья</Link> |
         {user && (
           <>
-          console.log(userId);
             <Link to={`/users/${user.id}`}>Профиль</Link>
           </>
         )}
