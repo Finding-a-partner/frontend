@@ -1,5 +1,6 @@
-// src/pages/Register.tsx
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 const RegisterPage = () => {
   const [form, setForm] = useState({
@@ -11,9 +12,13 @@ const RegisterPage = () => {
     description: "",
   });
   const [error, setError] = useState("");
-  const [token, setToken] = useState<string | null>(null);
+  const [success, setSuccess] = useState(false);
+  const navigate = useNavigate();
+  const { setUser } = useAuth();
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
@@ -31,10 +36,14 @@ const RegisterPage = () => {
       }
 
       const data = await response.json();
-      setToken(data.token);
-      localStorage.setItem("token", data.accessToken); // сохраняем токен
+      localStorage.setItem("user", JSON.stringify(data.user));
+      localStorage.setItem("token", data.accessToken); // можно сохранить в localStorage
+      setUser(data.user)
 
-      // TODO: перенаправить пользователя или показать сообщение
+      setSuccess(true);
+      setTimeout(() => {
+        navigate("/feed");
+      }, 1500); // через 1.5 секунды переходим
     } catch (err: any) {
       setError(err.message || "Ошибка регистрации");
     }
@@ -51,6 +60,7 @@ const RegisterPage = () => {
       <textarea name="description" placeholder="Описание" value={form.description} onChange={handleChange} />
       <button onClick={handleRegister}>Зарегистрироваться</button>
       {error && <p style={{ color: "red" }}>{error}</p>}
+      {success && <p style={{ color: "green" }}>Регистрация прошла успешно!</p>}
     </div>
   );
 };
